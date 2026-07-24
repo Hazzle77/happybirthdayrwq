@@ -1,0 +1,393 @@
+/* ==================== 基础配置 ==================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 全屏背景适配 */
+.bg-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('assets/background.png') no-repeat center center/cover;
+  z-index: -1;
+}
+
+/* ==================== 1. 右上角音乐唱片 ==================== */
+.music-player {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  width: 85px;
+  height: 85px;
+  cursor: pointer;
+  z-index: 9999;
+  border-radius: 50%;
+}
+
+.vinyl-record {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+  transition: transform 0.5s linear;
+}
+
+.vinyl-record.playing {
+  animation: rotateVinyl 4s linear infinite;
+}
+
+@keyframes rotateVinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== 2. 中央蛋糕 & 蜡烛定位 ==================== */
+.main-stage {
+  position: absolute;
+  top: 45%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  width: 100vw;
+}
+
+.cake-container {
+  position: relative;
+  width: 66.6vw; 
+  max-width: 480px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cake-body {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 12px 25px rgba(0, 0, 0, 0.12));
+  transition: transform 0.3s ease;
+}
+
+.cake-container:hover .cake-body {
+  transform: scale(1.02);
+}
+
+/* 蜡烛精密对齐定位 */
+.candle-img {
+  position: absolute;
+  top: -22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25%;
+  height: auto;
+  object-fit: contain;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* 熄灭向上飘散效果 */
+.candle-img.fade-out {
+  opacity: 0 !important;
+  transform: translateX(-50%) translateY(-40px) scale(0.8) !important;
+}
+
+/* ==================== 3. 底部盲盒 Icon ==================== */
+.bottom-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.feature-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-img-box {
+  width: 70px;  
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.icon-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+}
+
+.feature-icon.locked {
+  opacity: 0.4;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
+.feature-icon.unlocked {
+  opacity: 1;
+  filter: grayscale(0%);
+  cursor: pointer;
+}
+
+.feature-icon.unlocked:hover .icon-img-box {
+  transform: translateY(-8px) scale(1.1);
+}
+
+/* ==================== 4. 弹窗通用样式 ==================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 200;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 85%;
+  max-width: 380px;
+  border-radius: 24px;
+  padding: 25px 20px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+/* 针对信封弹窗的限制高度与弹性布局 */
+.modal-letter-card {
+  max-height: 75vh; /* 限制弹窗最大高度为屏幕高度的 75% */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 信封标题固定在顶部 */
+.modal-letter-card h3 {
+  color: #ff5e7e;
+  margin-bottom: 12px;
+  flex-shrink: 0; /* 防止被挤压 */
+}
+
+/* 可滑动的内容区域 */
+.letter-scroll-content {
+  flex: 1;
+  overflow-y: auto; /* 超出高度自动开启纵向滚动条 */
+  margin: 10px 0 15px;
+  padding-right: 5px; /* 给滚动条预留一点右侧间距 */
+  text-align: left;
+  /* 优化移动端触屏滑动的顺滑度 */
+  -webkit-overflow-scrolling: touch; 
+}
+
+/* 自定义柔和风格的滚动条（可选） */
+.letter-scroll-content::-webkit-scrollbar {
+  width: 5px;
+}
+.letter-scroll-content::-webkit-scrollbar-thumb {
+  background: #ffb3c1;
+  border-radius: 10px;
+}
+.letter-scroll-content::-webkit-scrollbar-track {
+  background: #fff0f3;
+}
+
+.letter-body {
+  line-height: 1.7;
+  color: #555;
+  font-size: 15px;
+}
+
+/* 按钮固定在底部 */
+.modal-letter-card .btn-primary {
+  flex-shrink: 0; /* 确保底部按钮永远不会被挤到屏幕外 */
+  margin-top: 5px;
+}
+/* ==================== 生日盲盒弹窗专属美化 ==================== */
+
+/* 盲盒卡片主容器 */
+.blindbox-modal {
+  background: linear-gradient(180deg, #ffffff 0%, #fff6f8 100%);
+  border: 3px solid #ffe3eb;
+  padding: 30px 24px 25px;
+  box-shadow: 0 15px 35px rgba(255, 143, 171, 0.2), 
+              0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* 标题样式 */
+.blindbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.blindbox-header .header-icon {
+  font-size: 22px;
+}
+
+.blindbox-header h3 {
+  color: #ff477e;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* 礼物盒图标及浮动动画 */
+.box-icon-container {
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.box-icon-floating {
+  font-size: 65px;
+  filter: drop-shadow(0 8px 12px rgba(255, 117, 140, 0.3));
+  cursor: pointer;
+  animation: floatBox 3s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 上下悬浮呼吸动画 */
+@keyframes floatBox {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+/* 点击抽奖时的摇晃效果 Class */
+.box-icon-floating.shaking {
+  animation: shakeBox 0.5s ease-in-out infinite !important;
+}
+
+@keyframes shakeBox {
+  0%, 100% { transform: rotate(0deg) scale(1.1); }
+  20% { transform: rotate(-12deg) scale(1.15); }
+  40% { transform: rotate(12deg) scale(1.15); }
+  60% { transform: rotate(-12deg) scale(1.15); }
+  80% { transform: rotate(12deg) scale(1.15); }
+}
+
+/* 盲盒结果展示卡片 */
+.result-card {
+  background: #ffffff;
+  border: 1.5px dashed #ffb3c6;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 6px rgba(255, 182, 193, 0.15);
+}
+
+.result-card p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+/* 抽中结果后的强调样式 */
+.result-card p.has-result {
+  color: #ff3366;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* 抽奖主按钮升级 */
+.btn-draw {
+  width: 100%;
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+  color: #ffffff;
+  border: none;
+  padding: 13px 0;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 117, 140, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-draw:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255, 117, 140, 0.5);
+}
+
+.btn-draw:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(255, 117, 140, 0.3);
+}
+
+/* 关闭按钮微调 */
+.blindbox-modal .close-btn {
+  top: 15px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  line-height: 26px;
+  border-radius: 50%;
+  background: #fff0f3;
+  color: #ff758c;
+  font-size: 18px;
+  transition: background 0.2s;
+}
+
+.blindbox-modal .close-btn:hover {
+  background: #ffe3eb;
+  color: #ff477e;
+}
